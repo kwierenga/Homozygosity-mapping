@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homozygosity Mapping · GRCh38</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #080c11;
+    --bg2:      #090d13;
+    --bg4:      #0d1520;
+    --border:   #1a2535;
+    --border2:  #1e2d40;
+    --accent:   #38bdf8;
+    --accent2:  #7dd3fc;
+    --text:     #c8d8e8;
+    --dim:      #4a6a8e;
+    --mute:     #2a3a50;
+    --green:    #4ade80;
+    --red:      #f87171;
+    --mono:     'IBM Plex Mono', 'Courier New', monospace;
+    --sans:     'IBM Plex Sans', sans-serif;
+  }
+
+  html, body { min-height: 100%; background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 13px; }
+
+  /* Header */
+  header {
+    padding: 16px 28px; border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg,#0c1320 0%,var(--bg) 100%);
+    display: flex; align-items: center; gap: 16px;
+  }
+  .subtitle { font-size: 10px; color: #2a4a6e; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 3px; }
+  h1 { font-family: var(--sans); font-size: 18px; font-weight: 600; color: #e2e8f0; letter-spacing: -.02em; }
+  .hint { margin-left: auto; font-size: 10px; color: #1e3a5a; text-align: right; line-height: 1.7; }
+
+  /* Input */
+  #input-panel { padding: 16px 28px; background: var(--bg2); border-bottom: 1px solid var(--border); }
+  #input-panel > label { font-size: 10px; color: var(--mute); letter-spacing: .15em; text-transform: uppercase; display: block; margin-bottom: 6px; }
+  .input-row { display: flex; gap: 10px; align-items: flex-start; }
+  textarea {
+    flex: 1; background: var(--bg4); border: 1px solid var(--border2);
+    border-radius: 4px; color: var(--accent2); font-family: var(--mono);
+    font-size: 13px; padding: 10px 12px; resize: vertical; line-height: 1.7; min-height: 72px;
+  }
+  textarea:focus { outline: none; border-color: #2a4a6e; }
+  button.primary {
+    padding: 10px 22px; background: #0e3a5e; border: 1px solid #1e5a8e;
+    border-radius: 4px; color: var(--accent2); font-family: var(--mono);
+    font-size: 12px; cursor: pointer; letter-spacing: .05em; font-weight: 600;
+    white-space: nowrap; transition: all .15s;
+  }
+  button.primary:hover { background: #144a7a; color: #bae6fd; }
+  button.primary:disabled { opacity: .4; cursor: not-allowed; }
+  .input-hint { font-size: 10px; color: #1e3a5a; margin-top: 5px; }
+
+  /* Tabs */
+  #tabs-bar {
+    display: none; align-items: center;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg); overflow-x: auto; padding: 0 28px;
+  }
+  .tab-btn {
+    padding: 10px 16px; background: none; border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--dim); font-family: var(--mono); font-size: 11px;
+    cursor: pointer; letter-spacing: .05em; white-space: nowrap; transition: color .1s;
+  }
+  .tab-btn.active { border-bottom-color: var(--accent); color: #e2e8f0; }
+  .tab-btn.all-tab { font-weight: 600; }
+  .tab-count { display: inline-block; margin-left: 6px; font-size: 9px; padding: 1px 5px; background: #0a1a2a; border-radius: 2px; color: #3a6a9e; }
+  .tab-count.accent { background: #0e2a40; color: var(--accent); }
+  .export-btn {
+    margin-left: auto; padding: 6px 14px;
+    background: #0a1e0e; border: 1px solid #1a3e22;
+    border-radius: 4px; color: var(--green); font-family: var(--mono);
+    font-size: 10px; cursor: pointer; letter-spacing: .08em; white-space: nowrap;
+  }
+  .export-btn:hover { background: #0f2a16; }
+
+  /* Filter panel */
+  #filter-panel {
+    display: none; align-items: center; gap: 16px;
+    padding: 8px 28px; background: #0f1318;
+    border-bottom: 1px solid #1e2530; font-size: 12px; color: var(--dim);
+  }
+  .filter-label { font-size: 10px; color: #3a4a5e; letter-spacing: .1em; text-transform: uppercase; }
+  .omim-label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  .omim-label input { accent-color: var(--accent); }
+  .stub-badge { font-size: 10px; padding: 1px 6px; border-radius: 3px; background: #1a2535; color: #3a5a7e; border: 1px solid #2a3a4e; }
+  #gene-count { margin-left: auto; color: #3a4a5e; font-size: 11px; }
+
+  /* Results */
+  #results { flex: 1; }
+  #empty-state { padding: 60px; text-align: center; color: #1e3a5a; line-height: 2.4; }
+  #empty-state .big { font-size: 13px; }
+  #empty-state .small { font-size: 11px; color: #162a40; }
+  .loading-msg { padding: 40px; text-align: center; color: var(--accent); animation: pulse 1.2s ease-in-out infinite; }
+  .error-msg { padding: 16px 28px; color: var(--red); background: #1a0a0a; border-bottom: 1px solid #3a1515; font-size: 12px; }
+  .no-genes { padding: 40px; text-align: center; color: #3a4a5e; }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead tr { background: #0a0e14; border-bottom: 2px solid #1e2d40; }
+  th {
+    padding: 8px 12px; text-align: left; cursor: pointer;
+    color: var(--dim); font-weight: 600; letter-spacing: .08em;
+    font-size: 10px; text-transform: uppercase; user-select: none; white-space: nowrap;
+  }
+  th.sorted { color: var(--accent); }
+  tbody tr:nth-child(even) { background: #0d1219; }
+  tbody tr:nth-child(odd)  { background: #0b0f15; }
+  tbody tr:hover { background: #131d2a; }
+  td { padding: 6px 12px; border-bottom: 1px solid #141c26; }
+  td.gene-name { color: #e2e8f0; font-weight: 600; }
+  td.gene-id a { color: var(--accent); text-decoration: none; }
+  td.gene-id a:hover { text-decoration: underline; }
+  td.coord { color: var(--accent2); font-variant-numeric: tabular-nums; }
+  td.strand-pos { color: #86efac; text-align: center; }
+  td.strand-neg { color: #fca5a5; text-align: center; }
+  td.desc { color: #64748b; max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #0a0e14; }
+  ::-webkit-scrollbar-thumb { background: #1e2d40; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="subtitle">GRCh38 · Ensembl REST</div>
+    <h1>Homozygosity Mapping</h1>
+  </div>
+  <div class="hint">protein-coding genes<br>via overlap/region</div>
+</header>
+
+<div id="input-panel">
+  <label>Genomic Regions · one per line · GRCh38</label>
+  <div class="input-row">
+    <textarea id="region-input" spellcheck="false" placeholder="chr3:45000000-52000000&#10;chr7:117000000-117400000"></textarea>
+    <button class="primary" id="query-btn" onclick="runQuery()">QUERY →</button>
+  </div>
+  <div class="input-hint">Format: chrN:start-end &nbsp;·&nbsp; one region per line &nbsp;·&nbsp; Ctrl+Enter to run</div>
+</div>
+
+<div id="tabs-bar"></div>
+<div id="filter-panel">
+  <span class="filter-label">Filters</span>
+  <label class="omim-label">
+    <input type="checkbox" id="omim-check" disabled>
+    OMIM disease genes only
+    <span class="stub-badge">STUB</span>
+  </label>
+  <span id="gene-count"></span>
+</div>
+
+<div id="results">
+  <div id="empty-state">
+    <div class="big">Enter one or more GRCh38 genomic regions above</div>
+    <div class="small">Format: chrN:start-end</div>
+  </div>
+</div>
+
+<script>
+const ENSEMBL = 'https://rest.ensembl.org';
+
+// ── State ──────────────────────────────────────────────────────────────────
+const state = { tabs: [], activeTab: null, sortCol: 'start', sortAsc: true };
+
+// ── Region parsing ─────────────────────────────────────────────────────────
+function parseRegion(s) {
+  s = s.trim();
+  const m = s.match(/^(chr[\w]+|[\w]+):(\d+)-(\d+)$/i);
+  if (!m) return null;
+  let chr = m[1];
+  if (!chr.toLowerCase().startsWith('chr')) chr = 'chr' + chr;
+  return { raw: s, chr, start: parseInt(m[2]), end: parseInt(m[3]) };
+}
+
+// ── Ensembl fetch (direct, no backend) ────────────────────────────────────
+async function fetchGenes(region) {
+  const coord = `${region.chr.replace(/^chr/i, '')}:${region.start}-${region.end}`;
+  const url = `${ENSEMBL}/overlap/region/human/${coord}?feature=gene&content-type=application/json`;
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error(`Ensembl returned HTTP ${resp.status}`);
+  const data = await resp.json();
+  return data
+    .filter(g => g.biotype === 'protein_coding')
+    .map(g => ({
+      gene_id:     g.gene_id || g.id || '',
+      gene_name:   g.external_name || g.gene_id || g.id || '',
+      chr:         g.seq_region_name || '',
+      start:       g.start,
+      end:         g.end,
+      strand:      g.strand === 1 ? '+' : '-',
+      description: (g.description || '').replace(/ \[.*?\]$/, ''),
+      region:      region.raw,
+    }));
+}
+
+// ── Run query ──────────────────────────────────────────────────────────────
+async function runQuery() {
+  const lines = document.getElementById('region-input').value
+    .split('\n').map(s => s.trim()).filter(Boolean);
+  const regions = lines.map(parseRegion).filter(Boolean);
+  if (!regions.length) return;
+
+  const btn = document.getElementById('query-btn');
+  btn.disabled = true; btn.textContent = 'Fetching…';
+
+  state.tabs = regions.map(r => ({ label: r.raw, genes: null, error: null, loading: true }));
+  state.activeTab = regions.length > 1 ? 'ALL' : regions[0].raw;
+  state.sortCol = 'start'; state.sortAsc = true;
+  renderTabs(); renderResults();
+
+  await Promise.all(regions.map(async region => {
+    try {
+      const genes = await fetchGenes(region);
+      const tab = state.tabs.find(t => t.label === region.raw);
+      if (tab) { tab.genes = genes; tab.loading = false; }
+    } catch (e) {
+      const tab = state.tabs.find(t => t.label === region.raw);
+      if (tab) { tab.error = e.message; tab.loading = false; }
+    }
+    renderTabs(); renderResults();
+  }));
+
+  btn.disabled = false; btn.textContent = 'QUERY →';
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function dedup(genes) {
+  const seen = new Set();
+  return genes.filter(g => { if (seen.has(g.gene_id)) return false; seen.add(g.gene_id); return true; });
+}
+function allGenes()     { return dedup(state.tabs.flatMap(t => t.genes || [])); }
+function currentGenes() {
+  if (state.activeTab === 'ALL') return allGenes();
+  return state.tabs.find(t => t.label === state.activeTab)?.genes || [];
+}
+function sortGenes(genes) {
+  return [...genes].sort((a, b) => {
+    const av = a[state.sortCol] ?? '', bv = b[state.sortCol] ?? '';
+    if (typeof av === 'number') return state.sortAsc ? av - bv : bv - av;
+    return state.sortAsc ? String(av).localeCompare(String(bv)) : String(bv).localeCompare(String(av));
+  });
+}
+function setSort(col) {
+  if (state.sortCol === col) state.sortAsc = !state.sortAsc;
+  else { state.sortCol = col; state.sortAsc = true; }
+  renderResults();
+}
+function switchTab(label) { state.activeTab = label; renderTabs(); renderResults(); }
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── TSV export ─────────────────────────────────────────────────────────────
+function exportTsv() {
+  const genes = currentGenes();
+  const cols   = ['gene_name','gene_id','chr','start','end','strand','description','region'];
+  const labels = ['Gene','Ensembl ID','Chr','Start','End','Strand','Description','Region'];
+  const lines  = [labels.join('\t'), ...genes.map(g => cols.map(c => g[c] ?? '').join('\t'))];
+  const blob   = new Blob([lines.join('\n')], { type: 'text/tab-separated-values' });
+  const a      = document.createElement('a');
+  a.href       = URL.createObjectURL(blob);
+  a.download   = (state.activeTab || 'genes').replace(/[^a-z0-9_]/gi,'_') + '.tsv';
+  a.click();
+}
+
+// ── Render tabs ────────────────────────────────────────────────────────────
+function renderTabs() {
+  const bar = document.getElementById('tabs-bar');
+  const fp  = document.getElementById('filter-panel');
+  if (!state.tabs.length) { bar.style.display = 'none'; fp.style.display = 'none'; return; }
+  bar.style.display = 'flex'; fp.style.display = 'flex';
+
+  let html = '';
+  if (state.tabs.length > 1) {
+    const all = allGenes(), anyLoading = state.tabs.some(t => t.loading);
+    html += `<button class="tab-btn all-tab${state.activeTab==='ALL'?' active':''}" onclick="switchTab('ALL')">ALL ${
+      anyLoading ? '⟳' : `<span class="tab-count accent">${all.length}</span>`}</button>`;
+  }
+  for (const tab of state.tabs) {
+    const badge = tab.loading ? '⟳' : (tab.genes ? `<span class="tab-count">${tab.genes.length}</span>` : '');
+    html += `<button class="tab-btn${state.activeTab===tab.label?' active':''}" onclick="switchTab('${esc(tab.label)}')">${esc(tab.label)} ${badge}</button>`;
+  }
+  const genes = currentGenes();
+  if (genes.length) html += `<button class="export-btn" onclick="exportTsv()">↓ TSV</button>`;
+  bar.innerHTML = html;
+  document.getElementById('gene-count').textContent =
+    `${genes.length} protein-coding gene${genes.length !== 1 ? 's' : ''}`;
+}
+
+// ── Render results ─────────────────────────────────────────────────────────
+const COLS = [
+  { key:'gene_name',   label:'Gene' },
+  { key:'gene_id',     label:'Ensembl ID' },
+  { key:'start',       label:'Start' },
+  { key:'end',         label:'End' },
+  { key:'strand',      label:'Strand' },
+  { key:'description', label:'Description' },
+];
+
+function renderResults() {
+  const el = document.getElementById('results');
+  if (!state.tabs.length) {
+    el.innerHTML = `<div id="empty-state"><div class="big">Enter one or more GRCh38 genomic regions above</div><div class="small">Format: chrN:start-end</div></div>`;
+    return;
+  }
+  const currentTab   = state.tabs.find(t => t.label === state.activeTab);
+  const anyLoading   = state.activeTab === 'ALL' ? state.tabs.some(t => t.loading) : currentTab?.loading;
+  if (anyLoading) { el.innerHTML = `<div class="loading-msg">Querying Ensembl REST API…</div>`; return; }
+  if (state.activeTab !== 'ALL' && currentTab?.error) {
+    el.innerHTML = `<div class="error-msg">⚠ ${esc(currentTab.error)}</div>`; return;
+  }
+  const genes = sortGenes(currentGenes());
+  if (!genes.length) { el.innerHTML = `<div class="no-genes">No protein-coding genes found in this region.</div>`; return; }
+
+  const ths = COLS.map(c =>
+    `<th class="${state.sortCol===c.key?'sorted':''}" onclick="setSort('${c.key}')">${c.label}${state.sortCol===c.key?(state.sortAsc?' ↑':' ↓'):''}</th>`
+  ).join('');
+
+  const rows = genes.map(g => `<tr>
+    <td class="gene-name">${esc(g.gene_name)}</td>
+    <td class="gene-id"><a href="https://ensembl.org/Homo_sapiens/Gene/Summary?g=${esc(g.gene_id)}" target="_blank" rel="noopener">${esc(g.gene_id)}</a></td>
+    <td class="coord">${(g.start||0).toLocaleString()}</td>
+    <td class="coord">${(g.end||0).toLocaleString()}</td>
+    <td class="${g.strand==='+'?'strand-pos':'strand-neg'}">${esc(g.strand)}</td>
+    <td class="desc" title="${esc(g.description)}">${esc(g.description)||'—'}</td>
+  </tr>`).join('');
+
+  el.innerHTML = `<div class="table-wrap"><table><thead><tr>${ths}</tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+// ── Keyboard shortcut ──────────────────────────────────────────────────────
+document.getElementById('region-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) runQuery();
+});
+</script>
+</body>
+</html>
