@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -9,127 +10,128 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg:       #080c11;
-    --bg2:      #090d13;
-    --bg4:      #0d1520;
-    --border:   #1a2535;
-    --border2:  #1e2d40;
-    --accent:   #38bdf8;
-    --accent2:  #7dd3fc;
-    --text:     #c8d8e8;
-    --dim:      #4a6a8e;
-    --mute:     #2a3a50;
-    --green:    #4ade80;
-    --red:      #f87171;
-    --mono:     'IBM Plex Mono', 'Courier New', monospace;
-    --sans:     'IBM Plex Sans', sans-serif;
-  }
+:root {
+–bg:       #080c11;
+–bg2:      #090d13;
+–bg4:      #0d1520;
+–border:   #1a2535;
+–border2:  #1e2d40;
+–accent:   #38bdf8;
+–accent2:  #7dd3fc;
+–text:     #c8d8e8;
+–dim:      #4a6a8e;
+–mute:     #2a3a50;
+–green:    #4ade80;
+–red:      #f87171;
+–mono:     ‘IBM Plex Mono’, ‘Courier New’, monospace;
+–sans:     ‘IBM Plex Sans’, sans-serif;
+}
 
-  html, body { min-height: 100%; background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 13px; }
+html, body { min-height: 100%; background: var(–bg); color: var(–text); font-family: var(–mono); font-size: 13px; }
 
-  /* Header */
-  header {
-    padding: 16px 28px; border-bottom: 1px solid var(--border);
-    background: linear-gradient(180deg,#0c1320 0%,var(--bg) 100%);
-    display: flex; align-items: center; gap: 16px;
-  }
-  .subtitle { font-size: 10px; color: #2a4a6e; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 3px; }
-  h1 { font-family: var(--sans); font-size: 18px; font-weight: 600; color: #e2e8f0; letter-spacing: -.02em; }
-  .hint { margin-left: auto; font-size: 10px; color: #1e3a5a; text-align: right; line-height: 1.7; }
+/* Header */
+header {
+padding: 16px 28px; border-bottom: 1px solid var(–border);
+background: linear-gradient(180deg,#0c1320 0%,var(–bg) 100%);
+display: flex; align-items: center; gap: 16px;
+}
+.subtitle { font-size: 10px; color: #2a4a6e; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 3px; }
+h1 { font-family: var(–sans); font-size: 18px; font-weight: 600; color: #e2e8f0; letter-spacing: -.02em; }
+.hint { margin-left: auto; font-size: 10px; color: #1e3a5a; text-align: right; line-height: 1.7; }
 
-  /* Input */
-  #input-panel { padding: 16px 28px; background: var(--bg2); border-bottom: 1px solid var(--border); }
-  #input-panel > label { font-size: 10px; color: var(--mute); letter-spacing: .15em; text-transform: uppercase; display: block; margin-bottom: 6px; }
-  .input-row { display: flex; gap: 10px; align-items: flex-start; }
-  textarea {
-    flex: 1; background: var(--bg4); border: 1px solid var(--border2);
-    border-radius: 4px; color: var(--accent2); font-family: var(--mono);
-    font-size: 13px; padding: 10px 12px; resize: vertical; line-height: 1.7; min-height: 72px;
-  }
-  textarea:focus { outline: none; border-color: #2a4a6e; }
-  button.primary {
-    padding: 10px 22px; background: #0e3a5e; border: 1px solid #1e5a8e;
-    border-radius: 4px; color: var(--accent2); font-family: var(--mono);
-    font-size: 12px; cursor: pointer; letter-spacing: .05em; font-weight: 600;
-    white-space: nowrap; transition: all .15s;
-  }
-  button.primary:hover { background: #144a7a; color: #bae6fd; }
-  button.primary:disabled { opacity: .4; cursor: not-allowed; }
-  .input-hint { font-size: 10px; color: #1e3a5a; margin-top: 5px; }
+/* Input */
+#input-panel { padding: 16px 28px; background: var(–bg2); border-bottom: 1px solid var(–border); }
+#input-panel > label { font-size: 10px; color: var(–mute); letter-spacing: .15em; text-transform: uppercase; display: block; margin-bottom: 6px; }
+.input-row { display: flex; gap: 10px; align-items: flex-start; }
+textarea {
+flex: 1; background: var(–bg4); border: 1px solid var(–border2);
+border-radius: 4px; color: var(–accent2); font-family: var(–mono);
+font-size: 13px; padding: 10px 12px; resize: vertical; line-height: 1.7; min-height: 72px;
+}
+textarea:focus { outline: none; border-color: #2a4a6e; }
+button.primary {
+padding: 10px 22px; background: #0e3a5e; border: 1px solid #1e5a8e;
+border-radius: 4px; color: var(–accent2); font-family: var(–mono);
+font-size: 12px; cursor: pointer; letter-spacing: .05em; font-weight: 600;
+white-space: nowrap; transition: all .15s;
+}
+button.primary:hover { background: #144a7a; color: #bae6fd; }
+button.primary:disabled { opacity: .4; cursor: not-allowed; }
+.input-hint { font-size: 10px; color: #1e3a5a; margin-top: 5px; }
 
-  /* Tabs */
-  #tabs-bar {
-    display: none; align-items: center;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg); overflow-x: auto; padding: 0 28px;
-  }
-  .tab-btn {
-    padding: 10px 16px; background: none; border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--dim); font-family: var(--mono); font-size: 11px;
-    cursor: pointer; letter-spacing: .05em; white-space: nowrap; transition: color .1s;
-  }
-  .tab-btn.active { border-bottom-color: var(--accent); color: #e2e8f0; }
-  .tab-btn.all-tab { font-weight: 600; }
-  .tab-count { display: inline-block; margin-left: 6px; font-size: 9px; padding: 1px 5px; background: #0a1a2a; border-radius: 2px; color: #3a6a9e; }
-  .tab-count.accent { background: #0e2a40; color: var(--accent); }
-  .export-btn {
-    margin-left: auto; padding: 6px 14px;
-    background: #0a1e0e; border: 1px solid #1a3e22;
-    border-radius: 4px; color: var(--green); font-family: var(--mono);
-    font-size: 10px; cursor: pointer; letter-spacing: .08em; white-space: nowrap;
-  }
-  .export-btn:hover { background: #0f2a16; }
+/* Tabs */
+#tabs-bar {
+display: none; align-items: center;
+border-bottom: 1px solid var(–border);
+background: var(–bg); overflow-x: auto; padding: 0 28px;
+}
+.tab-btn {
+padding: 10px 16px; background: none; border: none;
+border-bottom: 2px solid transparent;
+color: var(–dim); font-family: var(–mono); font-size: 11px;
+cursor: pointer; letter-spacing: .05em; white-space: nowrap; transition: color .1s;
+}
+.tab-btn.active { border-bottom-color: var(–accent); color: #e2e8f0; }
+.tab-btn.all-tab { font-weight: 600; }
+.tab-count { display: inline-block; margin-left: 6px; font-size: 9px; padding: 1px 5px; background: #0a1a2a; border-radius: 2px; color: #3a6a9e; }
+.tab-count.accent { background: #0e2a40; color: var(–accent); }
+.export-btn {
+margin-left: auto; padding: 6px 14px;
+background: #0a1e0e; border: 1px solid #1a3e22;
+border-radius: 4px; color: var(–green); font-family: var(–mono);
+font-size: 10px; cursor: pointer; letter-spacing: .08em; white-space: nowrap;
+}
+.export-btn:hover { background: #0f2a16; }
 
-  /* Filter panel */
-  #filter-panel {
-    display: none; align-items: center; gap: 16px;
-    padding: 8px 28px; background: #0f1318;
-    border-bottom: 1px solid #1e2530; font-size: 12px; color: var(--dim);
-  }
-  .filter-label { font-size: 10px; color: #3a4a5e; letter-spacing: .1em; text-transform: uppercase; }
-  .omim-label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
-  .omim-label input { accent-color: var(--accent); }
-  .stub-badge { font-size: 10px; padding: 1px 6px; border-radius: 3px; background: #1a2535; color: #3a5a7e; border: 1px solid #2a3a4e; }
-  #gene-count { margin-left: auto; color: #3a4a5e; font-size: 11px; }
+/* Filter panel */
+#filter-panel {
+display: none; align-items: center; gap: 16px;
+padding: 8px 28px; background: #0f1318;
+border-bottom: 1px solid #1e2530; font-size: 12px; color: var(–dim);
+}
+.filter-label { font-size: 10px; color: #3a4a5e; letter-spacing: .1em; text-transform: uppercase; }
+.omim-label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.omim-label input { accent-color: var(–accent); }
+.stub-badge { font-size: 10px; padding: 1px 6px; border-radius: 3px; background: #1a2535; color: #3a5a7e; border: 1px solid #2a3a4e; }
+#gene-count { margin-left: auto; color: #3a4a5e; font-size: 11px; }
 
-  /* Results */
-  #results { flex: 1; }
-  #empty-state { padding: 60px; text-align: center; color: #1e3a5a; line-height: 2.4; }
-  #empty-state .big { font-size: 13px; }
-  #empty-state .small { font-size: 11px; color: #162a40; }
-  .loading-msg { padding: 40px; text-align: center; color: var(--accent); animation: pulse 1.2s ease-in-out infinite; }
-  .error-msg { padding: 16px 28px; color: var(--red); background: #1a0a0a; border-bottom: 1px solid #3a1515; font-size: 12px; }
-  .no-genes { padding: 40px; text-align: center; color: #3a4a5e; }
+/* Results */
+#results { flex: 1; }
+#empty-state { padding: 60px; text-align: center; color: #1e3a5a; line-height: 2.4; }
+#empty-state .big { font-size: 13px; }
+#empty-state .small { font-size: 11px; color: #162a40; }
+.loading-msg { padding: 40px; text-align: center; color: var(–accent); animation: pulse 1.2s ease-in-out infinite; }
+.error-msg { padding: 16px 28px; color: var(–red); background: #1a0a0a; border-bottom: 1px solid #3a1515; font-size: 12px; }
+.no-genes { padding: 40px; text-align: center; color: #3a4a5e; }
 
-  /* Table */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  thead tr { background: #0a0e14; border-bottom: 2px solid #1e2d40; }
-  th {
-    padding: 8px 12px; text-align: left; cursor: pointer;
-    color: var(--dim); font-weight: 600; letter-spacing: .08em;
-    font-size: 10px; text-transform: uppercase; user-select: none; white-space: nowrap;
-  }
-  th.sorted { color: var(--accent); }
-  tbody tr:nth-child(even) { background: #0d1219; }
-  tbody tr:nth-child(odd)  { background: #0b0f15; }
-  tbody tr:hover { background: #131d2a; }
-  td { padding: 6px 12px; border-bottom: 1px solid #141c26; }
-  td.gene-name { color: #e2e8f0; font-weight: 600; }
-  td.gene-id a { color: var(--accent); text-decoration: none; }
-  td.gene-id a:hover { text-decoration: underline; }
-  td.coord { color: var(--accent2); font-variant-numeric: tabular-nums; }
-  td.strand-pos { color: #86efac; text-align: center; }
-  td.strand-neg { color: #fca5a5; text-align: center; }
-  td.desc { color: #64748b; max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Table */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+thead tr { background: #0a0e14; border-bottom: 2px solid #1e2d40; }
+th {
+padding: 8px 12px; text-align: left; cursor: pointer;
+color: var(–dim); font-weight: 600; letter-spacing: .08em;
+font-size: 10px; text-transform: uppercase; user-select: none; white-space: nowrap;
+}
+th.sorted { color: var(–accent); }
+tbody tr:nth-child(even) { background: #0d1219; }
+tbody tr:nth-child(odd)  { background: #0b0f15; }
+tbody tr:hover { background: #131d2a; }
+td { padding: 6px 12px; border-bottom: 1px solid #141c26; }
+td.gene-name { color: #e2e8f0; font-weight: 600; }
+td.gene-id a { color: var(–accent); text-decoration: none; }
+td.gene-id a:hover { text-decoration: underline; }
+td.coord { color: var(–accent2); font-variant-numeric: tabular-nums; }
+td.strand-pos { color: #86efac; text-align: center; }
+td.strand-neg { color: #fca5a5; text-align: center; }
+td.desc { color: #64748b; max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: #0a0e14; }
-  ::-webkit-scrollbar-thumb { background: #1e2d40; border-radius: 3px; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0a0e14; }
+::-webkit-scrollbar-thumb { background: #1e2d40; border-radius: 3px; }
 </style>
+
 </head>
 <body>
 
@@ -186,10 +188,16 @@ function parseRegion(s) {
 
 // ── Ensembl fetch (direct, no backend) ────────────────────────────────────
 async function fetchGenes(region) {
+  const size = region.end - region.start;
+  if (size > 5000000) throw new Error(`Region too large (${(size/1e6).toFixed(1)} Mb). Ensembl limit is 5 Mb — split into smaller regions.`);
+  if (size < 1) throw new Error(`Invalid region: end must be greater than start.`);
   const coord = `${region.chr.replace(/^chr/i, '')}:${region.start}-${region.end}`;
-  const url = `${ENSEMBL}/overlap/region/human/${coord}?feature=gene&content-type=application/json`;
-  const resp = await fetch(url);
-  if (!resp.ok) throw new Error(`Ensembl returned HTTP ${resp.status}`);
+  const url = `${ENSEMBL}/overlap/region/human/${coord}?feature=gene`;
+  const resp = await fetch(url, { headers: { 'Accept': 'application/json' } });
+  if (!resp.ok) {
+    const msg = await resp.text().catch(() => '');
+    throw new Error(`Ensembl error ${resp.status}${msg ? ': ' + msg.slice(0,120) : ''}`);
+  }
   const data = await resp.json();
   return data
     .filter(g => g.biotype === 'protein_coding')
@@ -345,5 +353,6 @@ document.getElementById('region-input').addEventListener('keydown', e => {
   if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) runQuery();
 });
 </script>
+
 </body>
 </html>
